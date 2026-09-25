@@ -49,7 +49,7 @@ function Navbar() {
             to="/"
             className="text-2xl font-display font-bold gradient-text shrink-0"
           >
-            Shubham
+            My Portfolio
           </Link>
 
           {/* CENTER: Links (Desktop) */}
