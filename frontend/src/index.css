@@ -84,16 +84,18 @@ body {
 ═══════════════════════════════════════ */
 @layer components {
 
-  /* Layout */
+  /* ───── LAYOUT ───── */
   .container-custom {
-    @apply max-w-7xl mx-auto px-6 md:px-8;
+    @apply max-w-7xl mx-auto py-50 px-6 md:px-8;
+    /* ↑ Sirf side padding. Top/bottom nahi. */
   }
 
   .section {
     @apply py-20 md:py-28 relative;
+    /* ↑ Section pe top/bottom padding. Container pe nahi. */
   }
 
-  /* Typography */
+  /* ───── TYPOGRAPHY ───── */
   .section-title {
     @apply text-4xl md:text-5xl font-display font-bold text-center mb-4;
   }
@@ -106,7 +108,7 @@ body {
     @apply bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent;
   }
 
-  /* Buttons */
+  /* ───── BUTTONS ───── */
   .btn-primary {
     @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium bg-primary hover:bg-primary-dark text-white shadow-glow hover:-translate-y-0.5 transition-all duration-300 cursor-pointer;
   }
@@ -115,17 +117,17 @@ body {
     @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium border border-border hover:border-primary text-white hover:text-primary transition-all duration-300 cursor-pointer;
   }
 
-  /* Cards */
+  /* ───── CARDS ───── */
   .card {
     @apply bg-dark border border-border rounded-2xl p-6 transition-all duration-300 hover:border-primary/50 hover:-translate-y-1;
   }
 
-  /* Inputs */
+  /* ───── INPUTS ───── */
   .input {
     @apply w-full px-4 py-3 bg-dark border border-border rounded-xl outline-none text-white placeholder:text-text-muted focus:border-primary transition;
   }
 
-  /* Badge */
+  /* ───── BADGE ───── */
   .badge {
     @apply inline-block px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20;
   }

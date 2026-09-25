@@ -1,72 +1,30 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { FiMenu, FiX, FiDownload } from 'react-icons/fi'
 import { motion, AnimatePresence } from 'framer-motion'
-import { gsap } from 'gsap'
-import { useGSAP } from '@gsap/react'
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
-  const navRef = useRef()
 
-  // ───── Scroll detect — glass effect ─────
+  // Scroll detect
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // ───── Body scroll lock when mobile menu open ─────
+  // Body scroll lock
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : 'unset'
     return () => { document.body.style.overflow = 'unset' }
   }, [isOpen])
 
-  // ───── Close mobile menu on route change ─────
+  // Close on route change
   useEffect(() => {
     setIsOpen(false)
   }, [location.pathname])
-
-  // ───── GSAP Animations ─────
-  useGSAP(() => {
-    // Navbar slide down
-    gsap.from(navRef.current, {
-      y: -100,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-    })
-
-    // Logo pop in
-    gsap.from('.nav-logo', {
-      opacity: 0,
-      scale: 0.8,
-      duration: 0.6,
-      delay: 0.2,
-      ease: 'back.out(1.7)',
-    })
-
-    // Nav links staggered
-    gsap.from('.nav-link', {
-      opacity: 0,
-      y: -20,
-      duration: 0.5,
-      stagger: 0.1,
-      delay: 0.3,
-      ease: 'power2.out',
-    })
-
-    // Resume button pop in
-    gsap.from('.resume-btn', {
-      opacity: 0,
-      scale: 0.8,
-      duration: 0.5,
-      delay: 0.8,
-      ease: 'back.out(1.7)',
-    })
-  }, { scope: navRef })
 
   const navLinks = [
     { name: 'Home', to: '/' },
@@ -78,29 +36,30 @@ function Navbar() {
   return (
     <>
       <nav
-        ref={navRef}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-          scrolled ? 'glass py-3 shadow-glow' : 'py-5 bg-transparent'
+        className={`fixed top-2 left-0 w-full z-50 transition-all duration-300  px-4 md:px-6 ${
+          scrolled
+            ? 'glass py-3 shadow-glow'
+            : 'py-5 bg-transparent'
         }`}
       >
-        <div className="container-custom flex items-center justify-between gap-4">
+        <div className=" flex items-center justify-around px-8 gap-8">
 
-          {/* ───── LEFT: LOGO ───── */}
+          {/* LEFT: Logo */}
           <Link
             to="/"
-            className="nav-logo text-2xl font-display font-bold gradient-text hover:scale-105 transition-transform duration-300 inline-block shrink-0"
+            className="text-2xl font-display font-bold gradient-text shrink-0"
           >
-            &lt;TeraNaam /&gt;
+            Shubham
           </Link>
 
-          {/* ───── CENTER: NAV LINKS ───── */}
-          <ul className="hidden md:flex items-center gap-8 mx-auto">
+          {/* CENTER: Links (Desktop) */}
+          <ul className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <li key={link.name}>
                 <NavLink
                   to={link.to}
                   className={({ isActive }) =>
-                    `nav-link relative py-2 font-medium transition-colors duration-300 ${
+                    `relative py-2 font-medium transition-colors duration-300 ${
                       isActive
                         ? 'text-primary'
                         : 'text-text-muted hover:text-primary'
@@ -123,20 +82,21 @@ function Navbar() {
             ))}
           </ul>
 
-          {/* ───── RIGHT: RESUME + HAMBURGER ───── */}
+          {/* RIGHT: Resume Button + Hamburger */}
           <div className="flex items-center gap-3 shrink-0">
+
             {/* Resume Button (Desktop) */}
             <a
               href="/resume.pdf"
               download
-              className="resume-btn hidden md:inline-flex items-center gap-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-primary via-secondary to-accent hover:shadow-glow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
-              style={{ padding: '14px 32px' }}
+              className="hidden md:inline-flex items-center gap-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-primary via-secondary to-accent hover:shadow-glow-lg transition-all duration-300"
+              style={{ padding: '12px 28px' }}
             >
-              <FiDownload className="text-base" />
+              <FiDownload />
               Resume
             </a>
 
-            {/* Mobile Hamburger */}
+            {/* Hamburger (Mobile) */}
             <button
               className="md:hidden text-2xl text-text-primary hover:text-primary transition"
               onClick={() => setIsOpen(!isOpen)}
@@ -148,9 +108,7 @@ function Navbar() {
         </div>
       </nav>
 
-      {/* ═══════════════════════════════════════
-          MOBILE MENU
-      ═══════════════════════════════════════ */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -182,13 +140,8 @@ function Navbar() {
 
               {/* Mobile Links */}
               <ul className="flex flex-col gap-2">
-                {navLinks.map((link, index) => (
-                  <motion.li
-                    key={link.name}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
+                {navLinks.map((link) => (
+                  <li key={link.name}>
                     <NavLink
                       to={link.to}
                       className={({ isActive }) =>
@@ -201,23 +154,20 @@ function Navbar() {
                     >
                       {link.name}
                     </NavLink>
-                  </motion.li>
+                  </li>
                 ))}
               </ul>
 
-              {/* Mobile CTA */}
-              <motion.a
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+              {/* Mobile Resume Button */}
+              <a
                 href="/resume.pdf"
                 download
-                className="w-full mt-8 inline-flex items-center justify-center gap-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-primary via-secondary to-accent hover:shadow-glow-lg transition-all duration-300"
-                style={{ padding: '16px 32px' }}
+                className="w-full mt-8 inline-flex items-center justify-center gap-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-primary via-secondary to-accent hover:shadow-glow-lg transition-all duration-300"
+                style={{ padding: '14px 28px' }}
               >
-                <FiDownload className="text-base" />
+                <FiDownload />
                 Download Resume
-              </motion.a>
+              </a>
             </motion.div>
           </>
         )}
