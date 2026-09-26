@@ -36,18 +36,18 @@ function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-2 left-0 w-full z-50 transition-all duration-300  px-4 md:px-6 ${
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
           scrolled
-            ? 'glass py-3 shadow-glow'
-            : 'py-5 bg-transparent'
+            ? 'bg-dark/95 backdrop-blur-md border-b border-border py-3 shadow-glow'
+            : 'bg-transparent py-5'
         }`}
       >
-        <div className=" flex items-center justify-around px-8 gap-8">
+        <div className="container-custom flex items-center justify-between gap-4">
 
           {/* LEFT: Logo */}
           <Link
             to="/"
-            className="text-2xl font-display font-bold gradient-text shrink-0"
+            className="text-xl md:text-2xl font-display font-bold gradient-text shrink-0"
           >
             My Portfolio
           </Link>
@@ -82,10 +82,8 @@ function Navbar() {
             ))}
           </ul>
 
-          {/* RIGHT: Resume Button + Hamburger */}
+          {/* RIGHT: Resume + Hamburger */}
           <div className="flex items-center gap-3 shrink-0">
-
-            {/* Resume Button (Desktop) */}
             <a
               href="/resume.pdf"
               download
@@ -96,7 +94,6 @@ function Navbar() {
               Resume
             </a>
 
-            {/* Hamburger (Mobile) */}
             <button
               className="md:hidden text-2xl text-text-primary hover:text-primary transition"
               onClick={() => setIsOpen(!isOpen)}
@@ -112,7 +109,6 @@ function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -121,7 +117,6 @@ function Navbar() {
               className="fixed inset-0 bg-darker/80 backdrop-blur-sm z-40 md:hidden"
             />
 
-            {/* Slide-in Panel */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -129,7 +124,6 @@ function Navbar() {
               transition={{ type: 'tween', duration: 0.3 }}
               className="fixed top-0 right-0 h-full w-72 max-w-[80%] bg-dark border-l border-border z-50 md:hidden p-6 pt-20"
             >
-              {/* Close Button */}
               <button
                 onClick={() => setIsOpen(false)}
                 className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-xl text-text-muted hover:text-primary hover:bg-primary/10 transition"
@@ -138,7 +132,6 @@ function Navbar() {
                 <FiX />
               </button>
 
-              {/* Mobile Links */}
               <ul className="flex flex-col gap-2">
                 {navLinks.map((link) => (
                   <li key={link.name}>
@@ -158,7 +151,6 @@ function Navbar() {
                 ))}
               </ul>
 
-              {/* Mobile Resume Button */}
               <a
                 href="/resume.pdf"
                 download
