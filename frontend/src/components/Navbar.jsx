@@ -1,171 +1,143 @@
-import { useState, useEffect } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { FiMenu, FiX, FiDownload } from 'react-icons/fi'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 
-function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const location = useLocation()
+const links = [
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Skills", href: "#skills" },
+  { label: "Projects", href: "#projects" },
+  { label: "Experience", href: "#experience" },
+  { label: "Contact", href: "#contact" },
+];
 
-  // Scroll detect
+const ArrowRight = () => (
+  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+);
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState("#home");
+
+  // blur background after scrolling
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-  // Body scroll lock
   useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : 'unset'
-    return () => { document.body.style.overflow = 'unset' }
-  }, [isOpen])
+    if (!open) return;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
-  // Close on route change
+  // highlight link of the section currently in view (only for sections that exist)
   useEffect(() => {
-    setIsOpen(false)
-  }, [location.pathname])
+    const targets = links
+      .map((l) => document.querySelector(l.href))
+      .filter(Boolean);
+    if (!targets.length) return;
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => e.isIntersecting && setActive(`#${e.target.id}`)),
+      { threshold: 0.5 }
+    );
+    targets.forEach((t) => io.observe(t));
+    return () => io.disconnect();
+  }, []);
 
-  const navLinks = [
-    { name: 'Home', to: '/' },
-    { name: 'Skills', to: '/skills' },
-    { name: 'Projects', to: '/projects' },
-    { name: 'Contact', to: '/contact' },
-  ]
+  const navigateTo = (href) => {
+    setActive(href);
+    setOpen(false);
+    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
-    <>
+    <header
+      className={`fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 transition-all duration-300 sm:px-[5vw] lg:px-[78px] ${
+        scrolled
+          ? "border-b border-white/10 bg-[#0a0a0a]/80 py-4 backdrop-blur-xl"
+          : "py-6"
+      }`}
+    >
+      {/* Logo */}
+      <NavLink to="#home" onClick={() => navigateTo("#home")} aria-label="Shubam home" className="text-[34px] font-bold leading-none tracking-tight text-white">
+        S.
+      </NavLink>
+
+      {open && (
+        <button
+          type="button"
+          aria-label="Close navigation menu"
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+        />
+      )}
+
+      {/* Links */}
       <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-          scrolled
-            ? 'bg-dark/95 backdrop-blur-md border-b border-border py-3 shadow-glow'
-            : 'bg-transparent py-5'
+        id="main-navigation"
+        aria-label="Main"
+        className={`fixed right-0 top-0 z-50 flex h-screen w-[min(320px,82vw)] flex-col gap-6 border-l border-white/10 bg-[#0d0d0d] px-9 pb-10 pt-28 transition-transform duration-300 lg:absolute lg:left-1/2 lg:right-auto lg:top-auto lg:h-auto lg:w-auto lg:-translate-x-1/2 lg:flex-row lg:gap-[30px] lg:border-0 lg:bg-transparent lg:p-0 ${
+          open ? "visible translate-x-0" : "invisible translate-x-full lg:visible lg:translate-x-[-50%]"
         }`}
       >
-        <div className="container-custom flex items-center justify-between gap-4">
-
-          {/* LEFT: Logo */}
-          <Link
-            to="/"
-            className="text-xl md:text-2xl font-display font-bold gradient-text shrink-0"
+        {links.map((l) => (
+          <NavLink
+            key={l.href}
+            to={l.href}
+            onClick={() => navigateTo(l.href)}
+            className={`group relative w-fit pb-1.5 text-lg transition-colors lg:text-[15px] ${
+              active === l.href ? "text-white" : "text-neutral-400 hover:text-white"
+            }`}
           >
-            My Portfolio
-          </Link>
+            {l.label}
+            <span
+              className={`absolute bottom-0 left-0 h-[1.5px] w-full origin-left bg-white transition-transform duration-300 ${
+                active === l.href ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+              }`}
+            />
+          </NavLink>
+        ))}
 
-          {/* CENTER: Links (Desktop) */}
-          <ul className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <li key={link.name}>
-                <NavLink
-                  to={link.to}
-                  className={({ isActive }) =>
-                    `relative py-2 font-medium transition-colors duration-300 ${
-                      isActive
-                        ? 'text-primary'
-                        : 'text-text-muted hover:text-primary'
-                    }`
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      {link.name}
-                      {isActive && (
-                        <motion.span
-                          layoutId="activeLink"
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-secondary rounded-full"
-                        />
-                      )}
-                    </>
-                  )}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-
-          {/* RIGHT: Resume + Hamburger */}
-          <div className="flex items-center gap-3 shrink-0">
-            <a
-              href="/resume.pdf"
-              download
-              className="hidden md:inline-flex items-center gap-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-primary via-secondary to-accent hover:shadow-glow-lg transition-all duration-300"
-              style={{ padding: '12px 28px' }}
-            >
-              <FiDownload />
-              Resume
-            </a>
-
-            <button
-              className="md:hidden text-2xl text-text-primary hover:text-primary transition"
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <FiX /> : <FiMenu />}
-            </button>
-          </div>
-        </div>
+        {/* CTA inside mobile menu */}
+        <NavLink
+          to="#contact"
+          onClick={() => navigateTo("#contact")}
+          className="mt-3 inline-flex w-fit items-center gap-2.5 rounded-full border border-white/55 px-[22px] py-3 text-[15px] font-medium text-white lg:hidden"
+        >
+          Let’s Connect <ArrowRight />
+        </NavLink>
       </nav>
 
-      {/* MOBILE MENU */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-darker/80 backdrop-blur-sm z-40 md:hidden"
-            />
+      {/* CTA desktop */}
+      <NavLink
+        to="#contact"
+        onClick={() => navigateTo("#contact")}
+        className="hidden items-center gap-2.5 rounded-full border border-white/55 px-[22px] py-3 text-[15px] font-medium text-white transition-colors hover:bg-white hover:text-[#0a0a0a] lg:inline-flex"
+      >
+        Let’s Connect <ArrowRight />
+      </NavLink>
 
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-72 max-w-[80%] bg-dark border-l border-border z-50 md:hidden p-6 pt-20"
-            >
-              <button
-                onClick={() => setIsOpen(false)}
-                className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-xl text-text-muted hover:text-primary hover:bg-primary/10 transition"
-                aria-label="Close menu"
-              >
-                <FiX />
-              </button>
-
-              <ul className="flex flex-col gap-2">
-                {navLinks.map((link) => (
-                  <li key={link.name}>
-                    <NavLink
-                      to={link.to}
-                      className={({ isActive }) =>
-                        `block px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
-                          isActive
-                            ? 'text-primary bg-primary/10'
-                            : 'text-text-muted hover:text-primary hover:bg-primary/10'
-                        }`
-                      }
-                    >
-                      {link.name}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href="/resume.pdf"
-                download
-                className="w-full mt-8 inline-flex items-center justify-center gap-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-primary via-secondary to-accent hover:shadow-glow-lg transition-all duration-300"
-                style={{ padding: '14px 28px' }}
-              >
-                <FiDownload />
-                Download Resume
-              </a>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </>
-  )
+      {/* Hamburger */}
+      <button
+        type="button"
+        aria-label={open ? "Close menu" : "Open menu"}
+        aria-controls="main-navigation"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        className="relative z-[60] flex flex-col gap-[7px] p-2 lg:hidden"
+      >
+        <span className={`h-0.5 w-[26px] bg-white transition-transform ${open ? "translate-y-[4.5px] rotate-45" : ""}`} />
+        <span className={`h-0.5 w-[26px] bg-white transition-transform ${open ? "-translate-y-[4.5px] -rotate-45" : ""}`} />
+      </button>
+    </header>
+  );
 }
-
-export default Navbar

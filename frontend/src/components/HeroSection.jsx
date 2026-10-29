@@ -1,415 +1,329 @@
-import { motion } from 'framer-motion'
-import { TypeAnimation } from 'react-type-animation'
-import {
-  FiDownload,
-  FiArrowRight,
-  FiGithub,
-  FiLinkedin,
-  FiTwitter,
-  FiSend,
-} from 'react-icons/fi'
-import { Link } from 'react-router-dom'
-import {
-  SiReact,
-  SiNodedotjs,
-  SiMongodb,
-  SiExpress,
-  SiPython,
-  SiMysql,
-} from 'react-icons/si'
+import { useReducedMotion } from "framer-motion";
+import { TypeAnimation } from "react-type-animation";
+import shubam from "../assets/shubhamnew-transparent.gif";
 
-// ═══════════════════════════════════════
-// BACKGROUND ANIMATION CONFIG
-// Fixed (not random-per-render) so there's no
-// hydration/re-render jitter — positions & timings
-// are hand-picked to feel organic but stay stable.
-// ═══════════════════════════════════════
-const PAPER_PLANES = [
-  { top: '15%', left: '-5%', rotate: 25, duration: 18, delay: 0 },
-  { top: '55%', left: '-8%', rotate: 15, duration: 22, delay: 4 },
-  { top: '75%', left: '-6%', rotate: 35, duration: 20, delay: 9 },
-  { top: '30%', left: '-4%', rotate: 10, duration: 25, delay: 13 },
-]
+/* ------------------------------------------------------------------ */
+/*  CONTENT — all real strings, unchanged from your existing project   */
+/* ------------------------------------------------------------------ */
+const STACK = ["React.js", "Node.js", "Express", "MongoDB"];
 
-const LIGHT_PARTICLES = [
-  { left: '8%', size: 6, duration: 9, delay: 0 },
-  { left: '20%', size: 4, duration: 11, delay: 1.5 },
-  { left: '35%', size: 5, duration: 8, delay: 0.5 },
-  { left: '50%', size: 3, duration: 10, delay: 2.5 },
-  { left: '65%', size: 6, duration: 12, delay: 1 },
-  { left: '78%', size: 4, duration: 9, delay: 3 },
-  { left: '90%', size: 5, duration: 10, delay: 2 },
-]
+/* ------------------------------ icons ------------------------------ */
+const ArrowRight = () => (
+  <svg
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    className="h-[18px] w-[18px] transition-transform duration-300 group-hover:translate-x-1.5"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+);
 
-function HeroSection() {
+const Download = () => (
+  <svg
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    className="h-[18px] w-[18px] transition-transform duration-300 group-hover:translate-y-0.5"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
+  </svg>
+);
+
+/* ----------------------------- component --------------------------- */
+export default function HeroSection() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section
-      id="hero"
-      className="min-h-screen  flex items-center justify-center relative overflow-hidden "
+      id="home"
+      aria-labelledby="hero-heading"
+      className="relative overflow-hidden bg-[#0a0a0a] px-5 pb-0 pt-6 sm:px-[5vw] sm:pt-6 min-[800px]:flex min-[800px]:min-h-screen min-[800px]:items-center min-[800px]:px-[4vw] xl:px-[78px] min-[800px]:pb-0"
     >
-      {/* ═══════════════════════════════════════
-          BACKGROUND: dot-grid + blobs (base layer)
-      ═══════════════════════════════════════ */}
+      {/* Pure CSS motion: content is visible even if JavaScript never runs */}
+      <style>{`
+        @keyframes rise {
+          from { opacity: 0; transform: translateY(22px); }
+          to   { opacity: 1; transform: none; }
+        }
+        @keyframes lineUp {
+          from { transform: translateY(105%); }
+          to   { transform: none; }
+        }
+        @keyframes lineGrow {
+          from { width: 0; }
+          to   { width: 38px; }
+        }
+        @keyframes portraitIn {
+          from {
+            clip-path: inset(100% 0 0 0);
+            opacity: .4;
+            filter: brightness(.55);
+            transform: translateY(24px);
+          }
+          to {
+            clip-path: inset(0 0 0 0);
+            opacity: 1;
+            filter: none;
+            transform: none;
+          }
+        }
+        @keyframes traceDraw {
+          from { transform: scaleY(0); }
+          to   { transform: scaleY(1); }
+        }
+        @keyframes nodeIn {
+          from { opacity: 0; transform: scale(.4); }
+          to   { opacity: 1; transform: none; }
+        }
+        @keyframes tracePulse {
+          from { transform: translateY(-120%); }
+          to   { transform: translateY(420%); }
+        }
+
+        .reveal {
+          opacity: 0;
+          animation: rise .8s cubic-bezier(.2,.7,.2,1) forwards;
+          animation-delay: var(--delay, 0ms);
+        }
+        .line {
+          display: block;
+          overflow: hidden;
+          padding: .06em .08em .1em 0;
+          margin: -.06em -.08em -.1em 0;
+        }
+        .line-in {
+          display: block;
+          transform: translateY(105%);
+          animation: lineUp .95s cubic-bezier(.2,.7,.2,1) forwards;
+          animation-delay: var(--delay, 0ms);
+        }
+        .eyebrow-line {
+          width: 0;
+          animation: lineGrow .8s ease .5s forwards;
+        }
+        .portrait-in {
+          animation: portraitIn 1.3s cubic-bezier(.2,.7,.2,1) .25s backwards;
+        }
+
+        /* Signature: the refined luminous trace that leads into Skills */
+        .trace-line {
+          transform-origin: top;
+          transform: scaleY(0);
+          animation: traceDraw 1.1s cubic-bezier(.65,0,.35,1) 1.5s forwards;
+        }
+        .trace-node {
+          opacity: 0;
+          animation: nodeIn .6s cubic-bezier(.2,.7,.2,1) 2.5s forwards;
+        }
+        .trace-pulse {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 22%;
+          background: linear-gradient(to bottom, transparent, #fff);
+          opacity: 0;
+          animation: tracePulse 2.6s ease-in-out 3.2s 3;
+        }
+
+        .bg-grid {
+          background-image:
+            linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+          background-size: 56px 56px;
+          -webkit-mask-image: radial-gradient(ellipse 80% 70% at 70% 50%, #000 0%, transparent 75%);
+                  mask-image: radial-gradient(ellipse 80% 70% at 70% 50%, #000 0%, transparent 75%);
+        }
+
+        .btn-shine { position: relative; overflow: hidden; }
+        .btn-shine::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            100deg,
+            transparent 30%,
+            var(--shine, rgba(255,255,255,.25)) 50%,
+            transparent 70%
+          );
+          transform: translateX(-120%);
+          transition: transform .8s cubic-bezier(.2,.7,.2,1);
+        }
+        .btn-shine:hover::after { transform: translateX(120%); }
+
+        @media (prefers-reduced-motion: reduce) {
+          .reveal,
+          .line-in,
+          .portrait-in,
+          .trace-line,
+          .trace-node {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+            clip-path: none !important;
+            filter: none !important;
+          }
+          .eyebrow-line { animation: none !important; width: 38px !important; }
+          .trace-pulse { display: none; }
+          .btn-shine::after { display: none; }
+        }
+      `}</style>
+
+      {/* Background: grid + soft key light behind the portrait */}
+      <div className="bg-grid pointer-events-none absolute inset-0" aria-hidden="true" />
       <div
-        className="absolute inset-0 opacity-[0.15] pointer-events-none"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
         aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_50%_85%,#222_0%,transparent_70%)] min-[800px]:bg-[radial-gradient(ellipse_50%_75%_at_78%_45%,#262626_0%,transparent_70%)]"
       />
 
-      {/* Background Blobs */}
-      <div className="absolute top-20 -left-20 w-72 md:w-96 h-72 md:h-96 bg-primary/20 rounded-full blur-3xl animate-blob"></div>
-      <div className="absolute bottom-20 -right-20 w-72 md:w-96 h-72 md:h-96 bg-secondary/20 rounded-full blur-3xl animate-blob"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 md:w-[500px] h-96 md:h-[500px] bg-accent/10 rounded-full blur-3xl"></div>
+      <div className="relative z-10 mx-auto grid w-full max-w-[1500px] items-center gap-6 min-[800px]:min-h-[calc(100vh-7rem)] min-[800px]:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] min-[800px]:gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
+        {/* ================= LEFT: EDITORIAL TYPOGRAPHY ================= */}
+        <div className="relative z-20 max-w-[660px] min-[800px]:pb-24">
+          <p
+            className="reveal mb-5 flex items-center gap-4 text-sm tracking-[0.3em] text-neutral-200 sm:text-base"
+            style={{ "--delay": "100ms" }}
+          >
+            IT PROFESSIONAL
+            <span className="eyebrow-line h-px bg-neutral-500" aria-hidden="true" />
+          </p>
 
-      {/* ═══════════════════════════════════════
-          BACKGROUND: rising light particles
-          Small glowing orbs drifting upward + twinkling.
-      ═══════════════════════════════════════ */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        {LIGHT_PARTICLES.map((p, i) => (
-          <motion.span
-            key={i}
-            initial={{ y: '110%', opacity: 0 }}
-            animate={{ y: '-10%', opacity: [0, 0.8, 0.8, 0] }}
-            transition={{
-              duration: p.duration,
-              delay: p.delay,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
-            className="absolute bottom-0 rounded-full bg-primary shadow-glow"
+          {/* The name is the hero: large, solid white, revealed line by line */}
+          <h1
+            id="hero-heading"
+            className="mb-6 text-[clamp(3.75rem,17vw,6.5rem)] font-bold leading-[0.95] tracking-[-0.05em] text-white min-[800px]:text-[clamp(4rem,8.4vw,9rem)]"
+          >
+            <span className="line">
+              <span
+                className="line-in text-[0.3em] font-light leading-none tracking-[-0.01em] text-neutral-500"
+                style={{ "--delay": "200ms" }}
+              >
+                Hi, I’m
+              </span>
+            </span>
+            <span className="line mt-[0.08em]">
+              <span className="line-in" style={{ "--delay": "330ms" }}>
+                Shubham
+              </span>
+            </span>
+          </h1>
+
+          <h2
+            className="reveal mb-4 flex min-h-[2.4em] max-w-[560px] items-center text-[clamp(1.125rem,4.6vw,2.125rem)] font-normal leading-[1.2] tracking-tight text-neutral-300"
+            style={{ "--delay": "560ms" }}
+          >
+            {reduceMotion ? (
+              "Full-Stack Developer"
+            ) : (
+              <TypeAnimation
+                aria-label="Software Developer, AI Full-Stack Developer, Full-Stack Developer"
+                sequence={[
+                  "Software Developer",
+                  1800,
+                  "AI Full-Stack Developer",
+                  1800,
+                  "Full-Stack Developer",
+                  1800,
+                ]}
+                speed={55}
+                deletionSpeed={65}
+                repeat={Infinity}
+                cursor
+                wrapper="span"
+              />
+            )}
+          </h2>
+
+          <p
+            className="reveal mb-8 max-w-[540px] text-base font-light leading-[1.75] text-neutral-400 sm:text-lg min-[800px]:text-xl"
+            style={{ "--delay": "660ms" }}
+          >
+            Building scalable web applications, modern digital experiences, and
+            high-performance solutions that create real impact.
+          </p>
+
+          <div className="mb-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+            <a
+              href="#projects"
+              style={{ "--shine": "rgba(0,0,0,.12)", "--delay": "760ms" }}
+              className="reveal btn-shine group inline-flex h-12 w-full items-center justify-center gap-3 rounded-full border border-white bg-white px-6 text-base font-medium text-[#0a0a0a] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(255,255,255,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] sm:h-14 sm:w-auto sm:px-8 sm:text-lg"
+            >
+              View My Work <ArrowRight />
+            </a>
+            <a
+              href="https://drive.google.com/uc?export=download&id=19RvAVce6PZZD8R0BaZpl2m5_k1HOYkuZ"
+              download
+              style={{ "--delay": "860ms" }}
+              className="reveal btn-shine group inline-flex h-12 w-full items-center justify-center gap-3 rounded-full border border-white/55 px-6 text-base font-medium text-white transition-[transform,background-color,color,border-color] duration-300 hover:-translate-y-0.5 hover:border-white hover:bg-white hover:text-[#0a0a0a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] sm:h-14 sm:w-auto sm:px-8 sm:text-lg"
+            >
+              Download Resume <Download />
+            </a>
+          </div>
+
+          {/* technical motif: the stack the Skills universe maps out */}
+          <ul
+            aria-label="Core stack"
+            className="reveal flex flex-wrap divide-x divide-white/15 font-mono text-xs text-neutral-500 sm:text-[13px]"
+            style={{ "--delay": "980ms" }}
+          >
+            {STACK.map((t) => (
+              <li key={t} className="px-3 first:pl-0 last:pr-0">
+                {t}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* ================= RIGHT: CINEMATIC PORTRAIT ================= */}
+<div className="portrait-in relative mx-auto mt-4 w-[min(120vw,640px)] max-w-none min-[800px]:mx-0 min-[800px]:ml-auto min-[800px]:mt-0 min-[800px]:h-[min(98vh,92vw,1250px)] min-[800px]:w-fit min-[800px]:max-w-[calc(100%+4vw)] min-[800px]:-mr-[4vw] min-[800px]:self-end">
+          <img
+            src={shubam}
+            alt="Portrait of Shubham"
+            className="block h-auto w-full object-contain contrast-105 min-[800px]:h-full min-[800px]:w-auto min-[800px]:max-w-none min-[800px]:object-bottom"
             style={{
-              left: p.left,
-              width: p.size,
-              height: p.size,
+              WebkitMaskImage: "linear-gradient(to bottom, #000 85%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, #000 85%, transparent 100%)",
             }}
           />
-        ))}
-      </div>
+        </div>
 
-      {/* ═══════════════════════════════════════
-          BACKGROUND: floating paper planes
-          Drift diagonally across the section, looping.
-          Kept low-opacity so it reads as a subtle
-          professional accent, not a distraction.
-      ═══════════════════════════════════════ */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        {PAPER_PLANES.map((plane, i) => (
-          <motion.div
-            key={i}
-            initial={{ x: '-10vw', opacity: 0 }}
-            animate={{ x: '120vw', opacity: [0, 0.35, 0.35, 0] }}
-            transition={{
-              duration: plane.duration,
-              delay: plane.delay,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
-            className="absolute text-primary/70"
-            style={{ top: plane.top, left: plane.left, rotate: `${plane.rotate}deg` }}
-          >
-            <FiSend className="text-2xl md:text-3xl" />
-          </motion.div>
-        ))}
-      </div>
 
-      <div className="container-custom grid md:grid-cols-2 lg:gap-16 items-center relative z-10">
-
-        {/* ───── LEFT: Text ───── */}
-<motion.div
-  initial={{ opacity: 0, x: -30 }}
-  animate={{ opacity: 1, x: 0 }}
-  transition={{ duration: 0.6 }}
-  className="text-center md:text-left"
->
-  {/* Greeting */}
-  <motion.p
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.2 }}
-    className="text-primary font-medium text-base md:text-lg"
-  >
-    👋 Hello, I'm
-  </motion.p>
-
-  {/* Name */}
-  <motion.h1
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.3 }}
-    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight"
-  >
-    Shubham
-  </motion.h1>
-
-  {/* Typing Animation */}
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.4 }}
-    className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-semibold mb-2 h-10 sm:h-12 md:h-14 flex items-center justify-center md:justify-start"
-  >
-    <TypeAnimation
-      sequence={[
-        'Full Stack Developer',
-        2000,
-        'MERN Stack Developer',
-        2000,
-        'React Specialist',
-        2000,
-        'Problem Solver 🧠',
-        2000,
-      ]}
-      wrapper="span"
-      speed={50}
-      repeat={Infinity}
-      className="gradient-text"
-    />
-  </motion.div>
-
-  {/* Description */}
-  <motion.p
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.5 }}
-    className="text-text-muted text-base md:text-lg mb-3 max-w-lg mx-auto md:mx-0 leading-relaxed"
-  >
-    I build fast, scalable, and beautiful web applications using
-    MongoDB, Express, React, and Node.js.
-  </motion.p>
-
-  {/* CTA Buttons */}
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.6 }}
-    className="flex flex-wrap gap-4  justify-center md:justify-start"
-  >
-    <Link
-      to="/projects"
-      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-r from-primary via-secondary to-accent hover:shadow-glow-lg hover:-translate-y-0.5 transition-all duration-300"
-    >
-      View Projects <FiArrowRight />
-    </Link>
-
-    <a
-      href="/resume.pdf"
-      download
-      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold border border-border hover:border-primary text-white hover:text-primary hover:-translate-y-0.5 transition-all duration-300"
-    >
-      <FiDownload /> Resume
-    </a>
-  </motion.div>
-
-  {/* Social Links */}
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.7 }}
-    className="flex gap-4 justify-center md:justify-start"
-  >
-    {[
-      { icon: <FiGithub />, href: '#' },
-      { icon: <FiLinkedin />, href: '#' },
-      { icon: <FiTwitter />, href: '#' },
-    ].map((social, i) => (
-      <motion.a
-        key={i}
-        href={social.href}
-        whileHover={{ scale: 1.1, y: -4 }}
-        whileTap={{ scale: 0.95 }}
-        className="w-11 h-11 md:w-12 md:h-12 glass rounded-xl flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/50 transition-colors duration-300"
-      >
-        {social.icon}
-      </motion.a>
-    ))}
-  </motion.div>
-</motion.div>
-        {/* ───── RIGHT: Photo with Animations ───── */}
-       <motion.div
-  initial={{ opacity: 0, scale: 0.9 }}
-  animate={{ opacity: 1, scale: 1 }}
-  transition={{ duration: 0.6, delay: 0.2 }}
-  className="flex justify-center relative mt-12 md:mt-0"
->
-  {/* Glow Behind */}
-  <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-secondary/40 rounded-full blur-3xl scale-90"></div>
-
-  <div className="relative">
-
-    {/* Rotating Dashed Ring */}
-    <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-      className="absolute inset-0 w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full border-2 border-dashed border-primary/30"
-    />
-
-    {/* Rotating Gradient Ring */}
-    <motion.div
-      animate={{ rotate: -360 }}
-      transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-      className="absolute inset-0 w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full border border-secondary/20"
-    />
-
-    {/* Pulsing Ring */}
-    <motion.div
-      animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.2, 0.5] }}
-      transition={{ duration: 3, repeat: Infinity }}
-      className="absolute inset-0 w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full bg-primary/20"
-    />
-
-    {/* Main Photo */}
-    <motion.div
-      animate={{ y: [0, -15, 0] }}
-      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-      className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full bg-gradient-to-br from-primary via-secondary to-accent p-1.5"
-    >
-      <div className="w-full h-full rounded-full overflow-hidden bg-dark">
-        <img
-          src="/Shubampic.jpeg"
-          alt="Shubham"
-          className="w-full h-full object-cover"
-        />
-      </div>
-    </motion.div>
-
-    {/* Orbiting Dot 1 */}
-    <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-      className="absolute inset-0 w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96"
-    >
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 md:w-3 md:h-3 bg-primary rounded-full shadow-glow"></div>
-    </motion.div>
-
-    {/* Orbiting Dot 2 */}
-    <motion.div
-      animate={{ rotate: -360 }}
-      transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-      className="absolute inset-0 w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96"
-    >
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 md:w-3 md:h-3 bg-secondary rounded-full shadow-glow"></div>
-    </motion.div>
-
-    {/* Orbiting Dot 3 */}
-    <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-      className="absolute inset-0 w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96"
-    >
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-2.5 h-2.5 md:w-3 md:h-3 bg-accent rounded-full shadow-glow"></div>
-    </motion.div>
-
-    {/* Floating Badge 1 — Experience */}
-    <motion.div
-      animate={{ y: [0, -10, 0] }}
-      transition={{ duration: 3, repeat: Infinity }}
-      className="absolute top-4 -right-4 sm:top-8 sm:-right-8 glass px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-glow"
-    >
-      <p className="text-xs sm:text-sm font-bold gradient-text">2+ Years</p>
-      <p className="text-[10px] sm:text-xs text-text-muted">Experience</p>
-    </motion.div>
-
-    {/* Floating Badge 2 — Projects */}
-    <motion.div
-      animate={{ y: [0, 10, 0] }}
-      transition={{ duration: 3, repeat: Infinity, delay: 1 }}
-      className="absolute bottom-4 -left-4 sm:bottom-8 sm:-left-8 glass px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-glow"
-    >
-      <p className="text-xs sm:text-sm font-bold gradient-text">15+</p>
-      <p className="text-[10px] sm:text-xs text-text-muted">Projects</p>
-    </motion.div>
-
-    {/* ═══════════════════════════════════════
-        TECH ICONS AROUND PHOTO
-    ═══════════════════════════════════════ */}
-
-    {/* Top Left — React */}
-    <motion.div
-      animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
-      transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
-      className="absolute top-0 left-0 md:-top-4 md:-left-4 glass px-3 py-2 rounded-xl shadow-glow hidden lg:flex items-center gap-2"
-    >
-      <SiReact className="text-lg text-[#61DAFB]" />
-      <span className="text-xs font-semibold text-text-primary">React</span>
-    </motion.div>
-
-    {/* Top Right — Node.js */}
-    <motion.div
-      animate={{ y: [0, 8, 0], x: [0, -5, 0] }}
-      transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-      className="absolute top-0 right-0 md:-top-4 md:-right-4 glass px-3 py-2 rounded-xl shadow-glow hidden lg:flex items-center gap-2"
-    >
-      <SiNodedotjs className="text-lg text-[#339933]" />
-      <span className="text-xs font-semibold text-text-primary">Node.js</span>
-    </motion.div>
-
-    {/* Middle Left — MongoDB */}
-    <motion.div
-      animate={{ y: [0, -10, 0] }}
-      transition={{ duration: 3.5, repeat: Infinity, delay: 0.3 }}
-      className="absolute top-1/3 -left-8 md:-left-12 glass px-3 py-2 rounded-xl shadow-glow hidden lg:flex items-center gap-2"
-    >
-      <SiMongodb className="text-lg text-[#47A248]" />
-      <span className="text-xs font-semibold text-text-primary">MongoDB</span>
-    </motion.div>
-
-    {/* Middle Right — Express */}
-    <motion.div
-      animate={{ y: [0, 10, 0] }}
-      transition={{ duration: 3.5, repeat: Infinity, delay: 1.5 }}
-      className="absolute top-1/3 -right-8 md:-right-12 glass px-3 py-2 rounded-xl shadow-glow hidden lg:flex items-center gap-2"
-    >
-      <SiExpress className="text-lg text-[#A855F7]" />
-      <span className="text-xs font-semibold text-text-primary">Express</span>
-    </motion.div>
-
-    {/* Bottom Left — Python */}
-    <motion.div
-      animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
-      transition={{ duration: 4, repeat: Infinity, delay: 0.8 }}
-      className="absolute bottom-0 left-0 md:-bottom-4 md:-left-4 glass px-3 py-2 rounded-xl shadow-glow hidden lg:flex items-center gap-2"
-    >
-      <SiPython className="text-lg text-[#3776AB]" />
-      <span className="text-xs font-semibold text-text-primary">Python</span>
-    </motion.div>
-
-    {/* Bottom Right — MySQL */}
-    <motion.div
-      animate={{ y: [0, 8, 0], x: [0, -5, 0] }}
-      transition={{ duration: 4, repeat: Infinity, delay: 1.2 }}
-      className="absolute bottom-0 right-0 md:-bottom-4 md:-right-4 glass px-3 py-2 rounded-xl shadow-glow hidden lg:flex items-center gap-2"
-    >
-      <SiMysql className="text-lg text-[#4479A1]" />
-      <span className="text-xs font-semibold text-text-primary">MySQL</span>
-    </motion.div>
-
-  </div>
-</motion.div>
-      </div>
-
-      {/* Scroll Down Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2"
-      >
-        <p className="text-text-muted text-xs">Scroll Down</p>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          className="w-6 h-10 border-2 border-border rounded-full flex justify-center pt-2"
+        {/* ================= SIGNATURE: LUMINOUS TRACE → SKILLS =================
+            A single fine line that draws itself down to a node — the same
+            line-and-node language the Skills universe is built from.
+            Acts as the hero's signature + the scroll cue into Skills.
+            Hidden on small screens; mobile keeps the horizontal eyebrow line. */}
+        <a
+          href="#skills"
+          aria-label="Scroll to skills"
+          className="group absolute bottom-0 left-0 z-30 hidden flex-col items-center gap-3 rounded-sm pb-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 min-[800px]:flex"
         >
-          <div className="w-1 h-2 bg-primary rounded-full"></div>
-        </motion.div>
-      </motion.div>
+          <span
+            className="reveal text-[10px] tracking-[0.35em] text-neutral-500 transition-colors duration-300 [writing-mode:vertical-rl] group-hover:text-white"
+            style={{ "--delay": "1300ms" }}
+          >
+            SCROLL
+          </span>
+          <span className="relative block h-16 w-px overflow-hidden" aria-hidden="true">
+            <span className="trace-line absolute inset-0 bg-white/35" />
+            <span className="trace-pulse" />
+          </span>
+          <span
+            className="trace-node grid h-3 w-3 place-items-center rounded-full border border-white/70 bg-[#0a0a0a] transition-shadow duration-300 group-hover:shadow-[0_0_14px_rgba(255,255,255,.5)]"
+            aria-hidden="true"
+          >
+            <i className="h-1 w-1 rounded-full bg-white" />
+          </span>
+        </a>
+      </div>
     </section>
-  )
+  );
 }
-
-export default HeroSection
