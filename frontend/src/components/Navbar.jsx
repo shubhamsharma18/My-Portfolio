@@ -1,63 +1,103 @@
+
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import LetsConnect from "./LetsConnect";
 
 const links = [
   { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
   { label: "Skills", href: "#skills" },
   { label: "Projects", href: "#projects" },
   { label: "Experience", href: "#experience" },
-  { label: "Contact", href: "#contact" },
 ];
-
-const ArrowRight = () => (
-  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M5 12h14M13 6l6 6-6 6" />
-  </svg>
-);
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState("#home");
 
-  // blur background after scrolling
+  // =====================================
+  // SCROLL BACKGROUND EFFECT
+  // =====================================
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+
+    window.addEventListener("scroll", onScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
-  useEffect(() => {
-    if (!open) return;
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
+  // =====================================
+  // CLOSE MOBILE MENU WITH ESCAPE
+  // =====================================
 
-  // highlight link of the section currently in view (only for sections that exist)
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
+
+  // =====================================
+  // ACTIVE SECTION OBSERVER
+  // =====================================
+
   useEffect(() => {
     const targets = links
-      .map((l) => document.querySelector(l.href))
+      .map((link) => document.querySelector(link.href))
       .filter(Boolean);
+
     if (!targets.length) return;
-    const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => e.isIntersecting && setActive(`#${e.target.id}`)),
-      { threshold: 0.5 }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActive(`#${entry.target.id}`);
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+      }
     );
-    targets.forEach((t) => io.observe(t));
-    return () => io.disconnect();
+
+    targets.forEach((target) => observer.observe(target));
+
+    return () => observer.disconnect();
   }, []);
+
+  // =====================================
+  // NAVIGATION FUNCTION
+  // =====================================
 
   const navigateTo = (href) => {
     setActive(href);
     setOpen(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+
+    document.querySelector(href)?.scrollIntoView({
+      behavior: "smooth",
+    });
   };
+
+  // =====================================
+  // JSX
+  // =====================================
 
   return (
     <header
@@ -67,76 +107,98 @@ export default function Navbar() {
           : "py-6"
       }`}
     >
-      {/* Logo */}
-      <NavLink to="#home" onClick={() => navigateTo("#home")} aria-label="Shubam home" className="text-[34px] font-bold leading-none tracking-tight text-white">
+      {/* LOGO */}
+
+      <NavLink
+        to="#home"
+        onClick={() => navigateTo("#home")}
+        aria-label="Shubham home"
+        className="relative z-[60] text-[34px] font-bold leading-none tracking-tight text-white"
+      >
         S.
       </NavLink>
+
+      {/* MOBILE MENU OVERLAY */}
 
       {open && (
         <button
           type="button"
           aria-label="Close navigation menu"
           onClick={() => setOpen(false)}
-          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
         />
       )}
 
-      {/* Links */}
+      {/* NAVIGATION LINKS */}
+
       <nav
         id="main-navigation"
-        aria-label="Main"
+        aria-label="Main navigation"
         className={`fixed right-0 top-0 z-50 flex h-screen w-[min(320px,82vw)] flex-col gap-6 border-l border-white/10 bg-[#0d0d0d] px-9 pb-10 pt-28 transition-transform duration-300 lg:absolute lg:left-1/2 lg:right-auto lg:top-auto lg:h-auto lg:w-auto lg:-translate-x-1/2 lg:flex-row lg:gap-[30px] lg:border-0 lg:bg-transparent lg:p-0 ${
-          open ? "visible translate-x-0" : "invisible translate-x-full lg:visible lg:translate-x-[-50%]"
+          open
+            ? "visible translate-x-0"
+            : "invisible translate-x-full lg:visible lg:translate-x-[-50%]"
         }`}
       >
-        {links.map((l) => (
+        {/* NAV LINKS */}
+
+        {links.map((link) => (
           <NavLink
-            key={l.href}
-            to={l.href}
-            onClick={() => navigateTo(l.href)}
+            key={link.href}
+            to={link.href}
+            onClick={() => navigateTo(link.href)}
             className={`group relative w-fit pb-1.5 text-lg transition-colors lg:text-[15px] ${
-              active === l.href ? "text-white" : "text-neutral-400 hover:text-white"
+              active === link.href
+                ? "text-white"
+                : "text-neutral-400 hover:text-white"
             }`}
           >
-            {l.label}
+            {link.label}
+
             <span
               className={`absolute bottom-0 left-0 h-[1.5px] w-full origin-left bg-white transition-transform duration-300 ${
-                active === l.href ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                active === link.href
+                  ? "scale-x-100"
+                  : "scale-x-0 group-hover:scale-x-100"
               }`}
             />
           </NavLink>
         ))}
 
-        {/* CTA inside mobile menu */}
-        <NavLink
-          to="#contact"
-          onClick={() => navigateTo("#contact")}
-          className="mt-3 inline-flex w-fit items-center gap-2.5 rounded-full border border-white/55 px-[22px] py-3 text-[15px] font-medium text-white lg:hidden"
-        >
-          Let’s Connect <ArrowRight />
-        </NavLink>
+        {/* MOBILE LET'S CONNECT */}
+
+        <div className="mt-3 lg:hidden">
+          <LetsConnect onOpen={() => setOpen(false)} />
+        </div>
       </nav>
 
-      {/* CTA desktop */}
-      <NavLink
-        to="#contact"
-        onClick={() => navigateTo("#contact")}
-        className="hidden items-center gap-2.5 rounded-full border border-white/55 px-[22px] py-3 text-[15px] font-medium text-white transition-colors hover:bg-white hover:text-[#0a0a0a] lg:inline-flex"
-      >
-        Let’s Connect <ArrowRight />
-      </NavLink>
+      {/* DESKTOP LET'S CONNECT */}
 
-      {/* Hamburger */}
+      <div className="hidden lg:block">
+        <LetsConnect />
+      </div>
+
+      {/* MOBILE HAMBURGER */}
+
       <button
         type="button"
         aria-label={open ? "Close menu" : "Open menu"}
         aria-controls="main-navigation"
         aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setOpen((previous) => !previous)}
         className="relative z-[60] flex flex-col gap-[7px] p-2 lg:hidden"
       >
-        <span className={`h-0.5 w-[26px] bg-white transition-transform ${open ? "translate-y-[4.5px] rotate-45" : ""}`} />
-        <span className={`h-0.5 w-[26px] bg-white transition-transform ${open ? "-translate-y-[4.5px] -rotate-45" : ""}`} />
+        <span
+          className={`h-0.5 w-[26px] bg-white transition-transform duration-300 ${
+            open ? "translate-y-[4.5px] rotate-45" : ""
+          }`}
+        />
+
+        <span
+          className={`h-0.5 w-[26px] bg-white transition-transform duration-300 ${
+            open ? "-translate-y-[4.5px] -rotate-45" : ""
+          }`}
+        />
       </button>
     </header>
   );
