@@ -176,6 +176,13 @@ export default function HeroSection() {
           .trace-pulse { display: none; }
           .btn-shine::after { display: none; }
         }
+
+        @media (max-width: 799px) {
+          .portrait-in {
+            animation: none !important;
+            opacity: .22 !important;
+          }
+        }
       `}</style>
 
       {/* Background: grid + soft key light behind the portrait */}
@@ -283,7 +290,7 @@ export default function HeroSection() {
         </div>
 
         {/* ================= RIGHT: CINEMATIC PORTRAIT ================= */}
-<div className="portrait-in relative mx-auto mt-4 w-[min(120vw,640px)] max-w-none min-[800px]:mx-0 min-[800px]:ml-auto min-[800px]:mt-0 min-[800px]:h-[min(98vh,92vw,1250px)] min-[800px]:w-fit min-[800px]:max-w-[calc(100%+4vw)] min-[800px]:-mr-[4vw] min-[800px]:self-end">
+        <div className="portrait-in pointer-events-none absolute bottom-0 left-1/2 z-0 w-[min(275vw,1150px)] max-w-none -translate-x-1/2 opacity-20 min-[800px]:pointer-events-auto min-[800px]:relative min-[800px]:bottom-auto min-[800px]:left-auto min-[800px]:z-auto min-[800px]:mx-0 min-[800px]:ml-auto min-[800px]:mt-0 min-[800px]:h-[min(98vh,92vw,1250px)] min-[800px]:w-fit min-[800px]:max-w-[calc(100%+4vw)] min-[800px]:-translate-x-0 min-[800px]:-mr-[4vw] min-[800px]:self-end min-[800px]:opacity-100">
           <img
             src={shubam}
             alt="Portrait of Shubham"
