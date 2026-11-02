@@ -183,6 +183,26 @@ export default function HeroSection() {
             opacity: .22 !important;
           }
         }
+
+        @media (min-width: 800px) and (max-width: 1280px) {
+          .portrait-in {
+            position: absolute !important;
+            right: -8vw !important;
+            bottom: 0 !important;
+            left: auto !important;
+            width: clamp(600px, 90vw, 950px) !important;
+            height: auto !important;
+            margin: 0 !important;
+            opacity: .22 !important;
+            transform: none !important;
+            pointer-events: none !important;
+          }
+
+          .portrait-in img {
+            width: 100% !important;
+            height: auto !important;
+          }
+        }
       `}</style>
 
       {/* Background: grid + soft key light behind the portrait */}
@@ -192,7 +212,7 @@ export default function HeroSection() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_50%_85%,#222_0%,transparent_70%)] min-[800px]:bg-[radial-gradient(ellipse_50%_75%_at_78%_45%,#262626_0%,transparent_70%)]"
       />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-[1500px] items-center gap-6 min-[800px]:min-h-[calc(100vh-7rem)] min-[800px]:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] min-[800px]:gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
+      <div className="relative z-10 mx-auto grid w-full max-w-[1500px] items-center gap-6 min-[800px]:min-h-[calc(100vh-7rem)] min-[1281px]:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] min-[800px]:gap-4">
         {/* ================= LEFT: EDITORIAL TYPOGRAPHY ================= */}
         <div className="relative z-20 max-w-[660px] min-[800px]:pb-24">
           <p
